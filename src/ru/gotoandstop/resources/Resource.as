@@ -50,7 +50,9 @@ package ru.gotoandstop.resources{
 		internal function set loader(value:ResourceLoader):void{
 			this.__loader = value;
 		}
-		
+
+        public var completeCallback:Function;
+
 		public function Resource(key:String, url:String){
 			super();
 			this._key = key;
@@ -78,6 +80,11 @@ package ru.gotoandstop.resources{
 		 * 
 		 */
 		internal function dispatchEvent2(event:Event):Boolean{
+            if(event.type==Event.COMPLETE){
+                if(completeCallback != null) {
+                    completeCallback(this);
+                }
+            }
 			return super.dispatchEvent(event);
 		}
 		

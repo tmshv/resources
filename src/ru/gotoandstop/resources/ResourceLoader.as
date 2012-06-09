@@ -132,6 +132,12 @@ package ru.gotoandstop.resources{
 			}
 			return resource;
 		}
+
+        public function addResource(key:String, url:String, callback:Function=null, loadAsDO:Boolean=false):Resource{
+            var r:Resource = add(url, key, loadAsDO);
+            r.completeCallback = callback;
+            return r;
+        }
 		
 		/**
 		 * Запускает процесс загрузки
