@@ -41,7 +41,9 @@ package ru.gotoandstop.resources{
 		public function get library():ResourceLibrary{
 			return this._library;
 		}
-		
+
+        public var notifyIOError:Boolean = true;
+
 		public function ResourceLoader(streamNumber:uint=1){
 			super();
 			
@@ -82,7 +84,7 @@ package ru.gotoandstop.resources{
 			this.loaders.push(loader);
 		}
 		
-		private function checkQueueEmptying():Boolean{
+		private function queueIsEmpty():Boolean{
 			var mask:uint;
 			for each(var loader:SingleLoader in this.loaders){
 				var value:uint = Number(loader.busy);
@@ -207,7 +209,7 @@ package ru.gotoandstop.resources{
 		
 		private function handlerLoadComplete(event:Event):void{
 			const loader:SingleLoader = event.target as SingleLoader;
-			var resource:Resource = this.currentlyLoadedResources[loader] as Resource;
+			var resource:Resource = currentlyLoadedResources[loader] as Resource;
 			
 			if(loader.loadAsDisplayObject){
 				if(loader.data is DisplayObject){
@@ -216,22 +218,21 @@ package ru.gotoandstop.resources{
 				}else{
 					resource.setData(new ByteArray(), loader.data);
 				}
-
 			}else{
 				var bytes:ByteArray = new ByteArray();
 				bytes.writeBytes(loader.data as ByteArray);
 				resource.setData(bytes, loader.data);
 			}
 			
-			this._library.add(resource);
+			_library.add(resource);
 			
 			resource.dispatchEvent2(event);
-			this.markLoaderAsFree(loader);
+			markLoaderAsFree(loader);
 			
-			if(this.checkQueueEmptying()){
+			if(queueIsEmpty()){
 				super.dispatchEvent(new ResourceLoaderEvent(ResourceLoaderEvent.QUEUE_COMPLETE));
 			}else{
-				this.loadQueue();
+				loadQueue();
 			}
 		}
 		
@@ -245,7 +246,7 @@ package ru.gotoandstop.resources{
 			const loader:SingleLoader = event.target as SingleLoader;
 			loader.busy = false;
 			var resource:Resource = this.currentlyLoadedResources[loader] as Resource;
-			resource.dispatchEvent2(event);
+			if(notifyIOError) resource.dispatchEvent2(event);
 			this.loadQueue();
 		}
 	}
