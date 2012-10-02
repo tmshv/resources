@@ -23,9 +23,9 @@ package ru.gotoandstop.resources{
 			return this._url;
 		}
 		
-		private var _key:String;
-		public function get key():String{
-			return this._key;
+		private var _id:String;
+		public function get id():String{
+			return this._id;
 		}
 		
 		private var _bytes:ByteArray;
@@ -33,69 +33,42 @@ package ru.gotoandstop.resources{
 			return this._bytes;
 		}
 		
-		private var _data:*;
-		public function get data():*{
+		private var _data:Object;
+		public function get data():Object{
 			return this._data;
 		}
 		
-		private var _loaded:Boolean;
-		public function get loaded():Boolean{
-			return this._loaded;
+		private var _loader:ResourceLoader;
+		public function get loader():ResourceLoader{
+			return this._loader;
 		}
-		
-		private var __loader:ResourceLoader;
-		internal function get loader():ResourceLoader{
-			return this.__loader;
-		}
-		internal function set loader(value:ResourceLoader):void{
-			this.__loader = value;
+		public function set loader(value:ResourceLoader):void{
+			this._loader = value;
 		}
 
-        public var completeCallback:Function;
+        public var dataCallback:Function;
 
-		public function Resource(key:String, url:String){
+		public function Resource(id:String, url:String, callback:Function){
 			super();
-			this._key = key;
-			this._url = url;
+			_id = id;
+			_url = url;
+            dataCallback = callback;
 		}
 		
-		public function reload():void{
-			//this.__loader.addResource(this);
-		}
-		
-		/**
-		 * Над экземпляром класса <code>Resource</code> нельзя вызвать метод <code>dispatchEvent</code>
-		 * @param event
-		 * @return 
-		 * 
-		 */
-		public override function dispatchEvent(event:Event):Boolean{
-			throw new IllegalOperationError();
-		}
-		
-		/**
-		 * События диспетчит по просьбе <code>ResourceLoader</code>
-		 * @param event
-		 * @return 
-		 * 
-		 */
-		internal function dispatchEvent2(event:Event):Boolean{
-            if(event.type==Event.COMPLETE){
-                if(completeCallback != null) {
-                    completeCallback(this);
-                }
+		public function push():void{
+            if(loader) {
+                loader.add(this);
             }
-			return super.dispatchEvent(event);
 		}
 		
-		internal function setData(bytes:ByteArray, data:*=null):void{
+		public function setData(bytes:ByteArray, data:Object=null):void{
 			this._bytes = bytes;
 			this._data = data;
+            dataCallback(this);
 		}
 		
 		public override function toString():String{
-			var message:String = '[Resource key:<key>]';
-			return message.replace(/<key>/, this._key);
+			return "[Resource id]".replace("id", id);
 		}
 	}
 }
