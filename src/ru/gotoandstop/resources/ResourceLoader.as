@@ -26,8 +26,8 @@ public class ResourceLoader extends EventDispatcher {
     private var _loaders:Vector.<SingleLoader>;
     private var _resourceByLoader:Dictionary;
     private var _working:Boolean;
-    private var _library:Object;
     public var notifyIOError:Boolean = true;
+    public var library:Object;
 
     /**
      * Создает экземпляр ResourceLoader
@@ -43,7 +43,7 @@ public class ResourceLoader extends EventDispatcher {
      * @param streamNumber количество потоков загрузки (количество лоадеров)
      */
     private function init(streamNumber:uint):void {
-        _library = {};
+        library = {};
         _queue = new Vector.<Object>();
         _loaders = new Vector.<SingleLoader>();
         _resourceByLoader = new Dictionary();
@@ -52,14 +52,6 @@ public class ResourceLoader extends EventDispatcher {
             configureListenersFor(loader);
             _loaders.push(loader);
         }
-    }
-
-    public function getResources():Object {
-        var list:Array = new Array();
-//            for(var key:String in _library){
-//                list.push(key);
-//            }
-        return list;
     }
 
     public function queueIsEmpty():Boolean {
@@ -184,7 +176,7 @@ public class ResourceLoader extends EventDispatcher {
             resource.setData(bytes, loader.data);
         }
 
-        _library[resource.id] = resource;
+        library[resource.id] = resource;
         resource.dispatchEvent(event);
         loader.busy = false;
         loadStep();
