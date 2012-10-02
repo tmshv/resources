@@ -7,13 +7,9 @@ import flash.events.IEventDispatcher;
 import flash.events.IOErrorEvent;
 import flash.events.ProgressEvent;
 import flash.events.SecurityErrorEvent;
-import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
-import flash.utils.getTimer;
-
-import ru.gotoandstop.resources.Resource;
 
 [Event(name="queueComplete", type="ru.gotoandstop.resources.ResourceLoaderEvent")]
 
