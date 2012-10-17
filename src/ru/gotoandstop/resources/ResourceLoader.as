@@ -147,10 +147,6 @@ public class ResourceLoader extends EventDispatcher {
         return free_loader;
     }
 
-    private function freeLoaderAvailable():Boolean{
-        return false;
-    }
-
     public function dispose():void {
 
     }
